@@ -6,6 +6,14 @@ kaboom({
   clearColor: [0, 0, 0, 1],
 });
 
+// Speed identifiers
+const MOVE_SPEED = 120;
+const JUMP_FORCE = 360;
+const BIG_JUMP_FORCE = 550;
+let CURRENT_JUMP_FORCE = JUMP_FORCE;
+const FALL_DEATH = 400;
+const ENEMY_SPEED = 20;
+
 // Spirtes
 loadRoot("https://i.imgur.com/");
 loadSprite("coin", "wbKxhcd.png");
@@ -76,6 +84,69 @@ scene("game", () => {
   };
 
   const gameLevel = addLevel(maps, levelCfg);
+
+  const scoreLabel = add([
+    text("test"),
+    pos(30, 6),
+    layer("ui"),
+    {
+      value: "test",
+    },
+  ]);
+
+  add([text("level " + "test", pos(4, 6))]);
+
+  function big() {
+    let timer = 0;
+    let isBig = false;
+    return {
+      update() {
+        if (isBig) {
+          // delta time since last frame
+          timer -= dt();
+          if (timer <= 0) {
+            this.smallify();
+          }
+        }
+      },
+      isBig() {
+        return isBig;
+      },
+      smallify() {
+        this.scale = vec2(1);
+        timer = 0;
+        ifBig = false;
+      },
+      biggify(time) {
+        this.scale = vec2(2);
+        timer = time;
+        ifBig = true;
+      },
+    };
+  }
+
+  const player = add([
+    sprite("mario"),
+    solid(),
+    pos(30, 0),
+    body(),
+    big(),
+    origin("bot"),
+  ]);
+
+  keyDown("left", () => {
+    player.move(-MOVE_SPEED, 0);
+  });
+
+  keyDown("right", () => {
+    player.move(MOVE_SPEED, 0);
+  });
+
+  keyPress("space", () => {
+    if (player.grounded()) {
+      player.jump(JUMP_FORCE);
+    }
+  });
 });
 
 start("game");
