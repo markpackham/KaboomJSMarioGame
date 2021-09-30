@@ -165,6 +165,10 @@ scene("game", () => {
     scoreLabel.text = scoreLabel.value;
   });
 
+  player.collides("dangerous", (d) => {
+    go("lose", { score: scoreLabel.value });
+  });
+
   keyDown("left", () => {
     player.move(-MOVE_SPEED, 0);
   });
@@ -178,6 +182,10 @@ scene("game", () => {
       player.jump(CURRENT_JUMP_FORCE);
     }
   });
+});
+
+scene("lose", ({ score }) => {
+  add([text(score, 32), origin("center"), pos(width() / 2, height() / 2)]);
 });
 
 start("game");
