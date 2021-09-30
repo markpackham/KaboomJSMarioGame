@@ -8,7 +8,7 @@ kaboom({
 
 // Speed identifiers
 const MOVE_SPEED = 120;
-const JUMP_FORCE = 360;
+const JUMP_FORCE = 400;
 const BIG_JUMP_FORCE = 450;
 let CURRENT_JUMP_FORCE = JUMP_FORCE;
 const FALL_DEATH = 400;
@@ -38,29 +38,31 @@ scene("game", ({ level, score }) => {
   layers(["bg", "obj", "ui"], "obj");
 
   const maps = [
-    "                                      ",
-    "                                      ",
-    "                                      ",
-    "                                      ",
-    "                                      ",
-    "     %   =*=%=                        ",
-    "                                      ",
-    "                            -+        ",
-    "                    ^   ^   ()        ",
-    "==============================   =====",
+    [
+      "                                      ",
+      "                                      ",
+      "                                      ",
+      "                                      ",
+      "                                      ",
+      "     %   =*=%=                        ",
+      "                                      ",
+      "                            -+        ",
+      "                    ^   ^   ()        ",
+      "==============================   =====",
+    ],
+    [
+      "£                                       £",
+      "£                                       £",
+      "£                                       £",
+      "£                                       £",
+      "£                                       £",
+      "£        @@@@@@              x x        £",
+      "£                          x x x        £",
+      "£                        x x x x  x   -+£",
+      "£               z   z  x x x x x  x   ()£",
+      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+    ],
   ];
-  // [
-  //   "£                                       £",
-  //   "£                                       £",
-  //   "£                                       £",
-  //   "£                                       £",
-  //   "£                                       £",
-  //   "£        @@@@@@              x x        £",
-  //   "£                          x x x        £",
-  //   "£                        x x x x  x   -+£",
-  //   "£               z   z  x x x x x  x   ()£",
-  //   "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-  // ],
 
   const levelCfg = {
     width: 20,
@@ -83,7 +85,7 @@ scene("game", ({ level, score }) => {
     x: [sprite("blue-steel"), solid(), scale(0.5)],
   };
 
-  const gameLevel = addLevel(maps, levelCfg);
+  const gameLevel = addLevel(maps[level], levelCfg);
 
   const scoreLabel = add([
     text(score),
@@ -185,11 +187,10 @@ scene("game", ({ level, score }) => {
   });
 
   // Movement
-
   player.collides("pipe", () => {
     keyPress("down", () => {
       go("game", {
-        level: level + 1,
+        level: (level + 1) % maps.length,
         score: scoreLabel.value,
       });
     });
