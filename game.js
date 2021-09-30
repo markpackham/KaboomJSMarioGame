@@ -170,9 +170,21 @@ scene("game", ({ score }) => {
   });
 
   player.collides("dangerous", (d) => {
-    go("lose", { score: scoreLabel.value });
+    if (isJumping) {
+      destroy(d);
+    } else {
+      go("lose", { score: scoreLabel.value });
+    }
   });
 
+  player.action(() => {
+    camPos(player.pos);
+    if (player.pos.y >= FALL_DEATH) {
+      go("lose", { score: scoreLabel.value });
+    }
+  });
+
+  // Movement
   keyDown("left", () => {
     player.move(-MOVE_SPEED, 0);
   });
@@ -181,8 +193,15 @@ scene("game", ({ score }) => {
     player.move(MOVE_SPEED, 0);
   });
 
+  player.action(() => {
+    if (player.grounded()) {
+      isJumping = false;
+    }
+  });
+
   keyPress("space", () => {
     if (player.grounded()) {
+      isJumping = true;
       player.jump(CURRENT_JUMP_FORCE);
     }
   });
